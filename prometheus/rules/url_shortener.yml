@@ -1,0 +1,103 @@
+# Recording and alerting rules.
+#
+# The recording rules exist so the Grafana dashboard and any alert share one
+# definition of "error rate" and "cache hit ratio". Duplicating those
+# expressions in ten panels is how a dashboard and an alert end up disagreeing.
+#
+# The alerting rules are DEFINITIONS ONLY -- no Alertmanager is deployed in
+# this stack, so nothing is routed anywhere. They are included because the
+# thresholds are the interesting part (what we would page on and why), and they
+# are visible under Prometheus -> Alerts. See docs/PRODUCTION_READINESS.md,
+# which lists real alert delivery as a gap rather than pretending it exists.
+
+groups:
+  - name: url_shortener_recording
+    interval: 15s
+    rules:
+      - record: job:http_requests:rate1m
+        expr: sum(rate(http_requests_total[1m]))
+
+      - record: job:http_errors_5xx:rate1m
+        expr: sum(rate(http_requests_total{status_class="5xx"}[1m]))
+
+      - record: job:http_errors_4xx:rate1m
+        expr: sum(rate(http_requests_total{status_class="4xx"}[1m]))
+
+      - record: job:http_error_ratio:rate5m
+        expr: |
+          sum(rate(http_requests_total{status_class="5xx"}[5m]))
+            /
+          clamp_min(sum(rate(http_requests_total[5m])), 0.001)
+
+      # Hit ratio over hits+misses. `clamp_min` keeps the expression from
+      # producing NaN while the stack is idle and both terms are zero.
+      - record: job:cache_hit_ratio:rate5m
+        expr: |
+          sum(rate(cache_hits_total[5m]))
+            /
+          clamp_min(sum(rate(cache_hits_total[5m])) + sum(rate(cache_misses_total[5m])), 0.001)
+
+      - record: job:rate_limit_violations:rate1m
+        expr: sum(rate(rate_limit_violations_total[1m]))
+
+  - name: url_shortener_alerts
+    rules:
+      - alert: ApiInstanceDown
+        expr: up{job="url-shortener-api"} == 0
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "API replica {{ $labels.replica }} is not scrapeable"
+          description: >
+            Nginx will take it out of rotation after 2 failed requests, so this
+            is a capacity alert rather than an outage -- unless every replica is
+            down.
+
+      - alert: HighServerErrorRate
+        expr: job:http_error_ratio:rate5m > 0.05
+        for: 2m
+        labels: { severity: critical }
+        annotations:
+          summary: "Over 5% of requests are returning 5xx"
+
+      - alert: RedisUnavailable
+        # Fires on either signal: the readiness probe reporting Redis down, or
+        # a sustained stream of Redis operation errors from the hot path.
+        expr: min(dependency_up{dependency="redis"}) == 0 or sum(rate(redis_errors_total[2m])) > 1
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Redis is unavailable or erroring"
+          description: >
+            Expected impact: redirects fall back to PostgreSQL (slower, still
+            correct), reads/redirects are no longer rate limited (fail-open),
+            and writes are rejected with 503 (fail-closed).
+
+      - alert: PostgresUnavailable
+        expr: min(dependency_up{dependency="postgres"}) == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "PostgreSQL is unavailable"
+          description: "Creates fail and cache misses cannot be served. This is a real outage."
+
+      - alert: CacheHitRatioCollapsed
+        # Only meaningful under load, hence the traffic guard: an idle stack
+        # legitimately has no hits.
+        expr: job:cache_hit_ratio:rate5m < 0.5 and job:http_requests:rate1m > 10
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "Cache hit ratio below 50% under load"
+          description: "Check for TTL misconfiguration, eviction pressure, or a Redis outage."
+
+      - alert: RedirectLatencyHigh
+        expr: |
+          histogram_quantile(
+            0.99,
+            sum by (le) (rate(http_request_duration_seconds_bucket{route="/{code}"}[5m]))
+          ) > 0.15
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "p99 redirect latency above 150ms"

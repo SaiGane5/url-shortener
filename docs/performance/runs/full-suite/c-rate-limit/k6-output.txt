@@ -1,0 +1,85 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/rate-limit.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 1 max VUs, 2m30s max duration (incl. graceful stop):
+              * burst: 60 iterations for each of 1 VUs (maxDuration: 2m0s, gracefulStop: 30s)
+
+time="2026-09-03T21:38:27Z" level=info msg="policy=20;w=60;burst=20;policy=write;algorithm=token_bucket limit=20 bucket=8486de25a54a0da0" source=console
+time="2026-09-03T21:38:27Z" level=info msg="#0 status=201 remaining=19 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#1 status=201 remaining=18 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#2 status=201 remaining=17 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#3 status=201 remaining=16 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#4 status=201 remaining=15 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#5 status=201 remaining=14 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#6 status=201 remaining=13 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#7 status=201 remaining=12 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#8 status=201 remaining=11 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#9 status=201 remaining=10 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#10 status=201 remaining=9 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#11 status=201 remaining=8 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#12 status=201 remaining=7 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#13 status=201 remaining=6 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#14 status=201 remaining=5 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#15 status=201 remaining=4 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#16 status=201 remaining=3 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#17 status=201 remaining=2 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#18 status=201 remaining=1 retry_after=- served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#19 status=201 remaining=0 retry_after=- served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="first 429 at request 20 (served by api-1)" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#20 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#21 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#22 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#23 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#24 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#25 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#26 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#27 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#28 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#29 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#30 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#31 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#32 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#33 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#34 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#35 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#36 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#37 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#38 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#39 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#40 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#41 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#42 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#43 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#44 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#45 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#46 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#47 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#48 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#49 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#50 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#51 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#52 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#53 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#54 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#55 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#56 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#57 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#58 status=429 remaining=0 retry_after=3 served_by=api-1" source=console
+time="2026-09-03T21:38:28Z" level=info msg="#59 status=429 remaining=0 retry_after=3 served_by=api-2" source=console
+
+=== Scenario C: rate limiter ===
+allowed=20 throttled=40 limit=20
+instances=api-1, api-2
+PASS -- one shared budget enforced across multiple instances
+
+running (0m00.3s), 0/1 VUs, 60 complete and 0 interrupted iterations
+burst ✓ [ 100% ] 1 VUs  0m00.3s/2m0s  60/60 iters, 60 per VU

@@ -1,0 +1,29 @@
+# Load-test profile: raises the rate limits so throughput scenarios measure the
+# application instead of the limiter.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.loadtest.yml up -d
+#
+# Why this exists: the production policy allows 20 writes/minute per IP. k6 runs
+# from a single container, so it presents as one IP and would be shed almost
+# immediately -- Scenario A would report the limiter's throughput, not the API's.
+#
+# The limiter stays *enabled*, only with a much larger budget. Leaving it on
+# keeps its Redis round-trip in the measured path, so the benchmark reflects the
+# real request cost rather than a configuration that no deployment ever runs.
+#
+# Scenario C (the rate-limiter test) must NOT use this override -- it needs the
+# production policy in order to observe throttling. scripts/load-test.sh handles
+# switching profiles between scenarios.
+
+services:
+  api-1: &loadtest-limits
+    environment:
+      RATE_LIMIT_REQUESTS: "2000000"
+      RATE_LIMIT_WINDOW_SECONDS: "60"
+      RATE_LIMIT_WRITE_REQUESTS: "2000000"
+      RATE_LIMIT_WRITE_WINDOW_SECONDS: "60"
+      RATE_LIMIT_REDIRECT_REQUESTS: "2000000"
+      RATE_LIMIT_REDIRECT_WINDOW_SECONDS: "60"
+
+  api-2:
+    <<: *loadtest-limits

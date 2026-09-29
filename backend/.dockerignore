@@ -1,0 +1,18 @@
+# Keep the build context small and never ship local secrets or caches.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+tests/
+.env
+.env.*
+*.md
+requirements.in
+requirements-dev.in
+requirements-dev.lock.txt

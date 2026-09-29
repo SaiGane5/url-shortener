@@ -1,0 +1,38 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Node / frontend ---
+node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.vite/
+*.tsbuildinfo
+
+# --- Load test / benchmark raw output ---
+# Summaries in docs/performance/*.md are committed; large raw JSON is not.
+docs/performance/raw/
+loadtest/results/
+*.k6.json
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+*.swp

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Distributed URL shortener with Redis caching and a Redis-backed distributed rate limiter."
+    />
+    <!-- Short links are pasted into other people's pages; do not leak the
+         referrer of whoever visits this app. -->
+    <meta name="referrer" content="no-referrer" />
+    <title>short.link — Distributed URL Shortener</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      This application requires JavaScript. The API itself does not:
+      <code>POST /api/v1/urls</code> works with any HTTP client.
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+# Direct runtime dependencies (unpinned source of truth).
+# The resolved, fully pinned lock file is requirements.lock.txt -- that is what
+# Docker images and CI install. Regenerate with: scripts/lock-deps.sh
+#
+# Deliberately absent:
+#   gunicorn          -- each container runs a single uvicorn process and we
+#                        scale by adding containers, so a process manager
+#                        inside the container adds nothing but would break
+#                        single-process Prometheus metrics.
+#   python-json-logger-- app/core/logging.py implements the JSON formatter
+#                        directly (~40 lines) because we need field redaction
+#                        and contextvar injection, which means subclassing a
+#                        formatter either way.
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+sqlalchemy[asyncio]
+asyncpg
+alembic
+redis
+prometheus-client
+httpx

@@ -1,0 +1,7 @@
+# Development / CI-only dependencies.
+-r requirements.in
+pytest
+pytest-asyncio
+pytest-cov
+ruff
+mypy

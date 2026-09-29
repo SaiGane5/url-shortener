@@ -1,0 +1,15 @@
+-- optimized: the exact lookup the redirect path performs
+-- rows in table: 250350
+
+                                                        QUERY PLAN                                                         
+---------------------------------------------------------------------------------------------------------------------------
+ Index Scan using uq_urls_short_code on urls  (cost=0.42..8.44 rows=1 width=112) (actual time=2.350..2.351 rows=1 loops=1)
+   Index Cond: ((short_code)::text = 'Ivzvse9'::text)
+   Filter: (deleted_at IS NULL)
+   Buffers: shared hit=1 read=3
+ Planning:
+   Buffers: shared hit=135
+ Planning Time: 0.518 ms
+ Execution Time: 2.416 ms
+(8 rows)
+

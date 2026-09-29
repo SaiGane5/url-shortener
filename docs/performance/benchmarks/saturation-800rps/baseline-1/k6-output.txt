@@ -1,0 +1,186 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/redirects.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 150 max VUs, 1m15s max duration (incl. graceful stop):
+              * redirects: 800.00 iterations/s for 45s (maxVUs: 60-150, gracefulStop: 30s)
+
+time="2026-09-03T22:49:35Z" level=warning msg="Insufficient VUs, reached 150 active VUs and cannot initialize more" executor=constant-arrival-rate scenario=redirects
+
+running (0m01.0s), 150/150 VUs, 23 complete and 0 interrupted iterations
+redirects   [   2% ] 150/150 VUs  00.7s/45s  800.00 iters/s
+
+running (0m02.0s), 150/150 VUs, 141 complete and 0 interrupted iterations
+redirects   [   4% ] 150/150 VUs  01.7s/45s  800.00 iters/s
+
+running (0m03.0s), 150/150 VUs, 240 complete and 0 interrupted iterations
+redirects   [   6% ] 150/150 VUs  02.7s/45s  800.00 iters/s
+
+running (0m04.0s), 150/150 VUs, 312 complete and 0 interrupted iterations
+redirects   [   8% ] 150/150 VUs  03.7s/45s  800.00 iters/s
+
+running (0m05.0s), 150/150 VUs, 423 complete and 0 interrupted iterations
+redirects   [  11% ] 150/150 VUs  04.7s/45s  800.00 iters/s
+
+running (0m06.0s), 150/150 VUs, 518 complete and 0 interrupted iterations
+redirects   [  13% ] 150/150 VUs  05.7s/45s  800.00 iters/s
+
+running (0m07.0s), 149/150 VUs, 608 complete and 0 interrupted iterations
+redirects   [  15% ] 149/150 VUs  06.7s/45s  800.00 iters/s
+
+running (0m08.0s), 149/150 VUs, 738 complete and 0 interrupted iterations
+redirects   [  17% ] 149/150 VUs  07.7s/45s  800.00 iters/s
+
+running (0m09.0s), 150/150 VUs, 875 complete and 0 interrupted iterations
+redirects   [  19% ] 150/150 VUs  08.7s/45s  800.00 iters/s
+
+running (0m10.0s), 150/150 VUs, 1004 complete and 0 interrupted iterations
+redirects   [  22% ] 150/150 VUs  09.8s/45s  800.00 iters/s
+
+running (0m11.0s), 149/150 VUs, 1137 complete and 0 interrupted iterations
+redirects   [  24% ] 149/150 VUs  10.7s/45s  800.00 iters/s
+
+running (0m12.0s), 150/150 VUs, 1276 complete and 0 interrupted iterations
+redirects   [  26% ] 150/150 VUs  11.7s/45s  800.00 iters/s
+
+running (0m13.0s), 150/150 VUs, 1393 complete and 0 interrupted iterations
+redirects   [  28% ] 150/150 VUs  12.7s/45s  800.00 iters/s
+
+running (0m14.0s), 150/150 VUs, 1530 complete and 0 interrupted iterations
+redirects   [  31% ] 150/150 VUs  13.7s/45s  800.00 iters/s
+
+running (0m15.0s), 149/150 VUs, 1647 complete and 0 interrupted iterations
+redirects   [  33% ] 149/150 VUs  14.7s/45s  800.00 iters/s
+
+running (0m16.0s), 150/150 VUs, 1779 complete and 0 interrupted iterations
+redirects   [  35% ] 150/150 VUs  15.7s/45s  800.00 iters/s
+
+running (0m17.0s), 150/150 VUs, 1911 complete and 0 interrupted iterations
+redirects   [  37% ] 150/150 VUs  16.7s/45s  800.00 iters/s
+
+running (0m18.0s), 150/150 VUs, 2025 complete and 0 interrupted iterations
+redirects   [  39% ] 150/150 VUs  17.8s/45s  800.00 iters/s
+
+running (0m19.0s), 150/150 VUs, 2156 complete and 0 interrupted iterations
+redirects   [  42% ] 150/150 VUs  18.7s/45s  800.00 iters/s
+
+running (0m20.0s), 150/150 VUs, 2258 complete and 0 interrupted iterations
+redirects   [  44% ] 150/150 VUs  19.8s/45s  800.00 iters/s
+
+running (0m21.0s), 150/150 VUs, 2359 complete and 0 interrupted iterations
+redirects   [  46% ] 150/150 VUs  20.7s/45s  800.00 iters/s
+
+running (0m22.0s), 150/150 VUs, 2488 complete and 0 interrupted iterations
+redirects   [  48% ] 148/150 VUs  21.7s/45s  800.00 iters/s
+
+running (0m23.0s), 150/150 VUs, 2599 complete and 0 interrupted iterations
+redirects   [  51% ] 150/150 VUs  22.7s/45s  800.00 iters/s
+
+running (0m24.0s), 150/150 VUs, 2713 complete and 0 interrupted iterations
+redirects   [  53% ] 150/150 VUs  23.7s/45s  800.00 iters/s
+
+running (0m25.0s), 150/150 VUs, 2824 complete and 0 interrupted iterations
+redirects   [  55% ] 150/150 VUs  24.7s/45s  800.00 iters/s
+
+running (0m26.0s), 150/150 VUs, 2919 complete and 0 interrupted iterations
+redirects   [  57% ] 150/150 VUs  25.7s/45s  800.00 iters/s
+
+running (0m27.0s), 150/150 VUs, 3044 complete and 0 interrupted iterations
+redirects   [  59% ] 150/150 VUs  26.7s/45s  800.00 iters/s
+
+running (0m28.0s), 150/150 VUs, 3153 complete and 0 interrupted iterations
+redirects   [  62% ] 150/150 VUs  27.7s/45s  800.00 iters/s
+
+running (0m29.0s), 150/150 VUs, 3282 complete and 0 interrupted iterations
+redirects   [  64% ] 150/150 VUs  28.7s/45s  800.00 iters/s
+
+running (0m30.0s), 150/150 VUs, 3399 complete and 0 interrupted iterations
+redirects   [  66% ] 150/150 VUs  29.7s/45s  800.00 iters/s
+
+running (0m31.0s), 150/150 VUs, 3527 complete and 0 interrupted iterations
+redirects   [  68% ] 150/150 VUs  30.7s/45s  800.00 iters/s
+
+running (0m32.0s), 150/150 VUs, 3643 complete and 0 interrupted iterations
+redirects   [  71% ] 150/150 VUs  31.7s/45s  800.00 iters/s
+
+running (0m33.0s), 150/150 VUs, 3737 complete and 0 interrupted iterations
+redirects   [  73% ] 150/150 VUs  32.7s/45s  800.00 iters/s
+
+running (0m34.0s), 150/150 VUs, 3870 complete and 0 interrupted iterations
+redirects   [  75% ] 150/150 VUs  33.7s/45s  800.00 iters/s
+
+running (0m35.0s), 150/150 VUs, 3999 complete and 0 interrupted iterations
+redirects   [  77% ] 150/150 VUs  34.7s/45s  800.00 iters/s
+
+running (0m36.0s), 150/150 VUs, 4124 complete and 0 interrupted iterations
+redirects   [  79% ] 150/150 VUs  35.7s/45s  800.00 iters/s
+
+running (0m37.0s), 150/150 VUs, 4198 complete and 0 interrupted iterations
+redirects   [  82% ] 150/150 VUs  36.7s/45s  800.00 iters/s
+
+running (0m38.0s), 150/150 VUs, 4261 complete and 0 interrupted iterations
+redirects   [  84% ] 150/150 VUs  37.7s/45s  800.00 iters/s
+
+running (0m39.0s), 149/150 VUs, 4335 complete and 0 interrupted iterations
+redirects   [  86% ] 149/150 VUs  38.8s/45s  800.00 iters/s
+
+running (0m40.0s), 147/150 VUs, 4452 complete and 0 interrupted iterations
+redirects   [  88% ] 147/150 VUs  39.8s/45s  800.00 iters/s
+
+running (0m41.0s), 149/150 VUs, 4559 complete and 0 interrupted iterations
+redirects   [  91% ] 149/150 VUs  40.7s/45s  800.00 iters/s
+
+running (0m42.0s), 150/150 VUs, 4664 complete and 0 interrupted iterations
+redirects   [  93% ] 150/150 VUs  41.7s/45s  800.00 iters/s
+
+running (0m43.0s), 150/150 VUs, 4724 complete and 0 interrupted iterations
+redirects   [  95% ] 150/150 VUs  42.7s/45s  800.00 iters/s
+
+running (0m44.0s), 150/150 VUs, 4814 complete and 0 interrupted iterations
+redirects   [  97% ] 150/150 VUs  43.7s/45s  800.00 iters/s
+
+running (0m45.0s), 150/150 VUs, 4927 complete and 0 interrupted iterations
+redirects   [  99% ] 150/150 VUs  44.7s/45s  800.00 iters/s
+
+running (0m46.0s), 048/150 VUs, 5048 complete and 0 interrupted iterations
+redirects ↓ [ 100% ] 150/150 VUs  45s  800.00 iters/s
+
+=== Scenario B: redirects ===
+{
+  "scenario": "B -- redirects",
+  "base_url": "http://nginx:80",
+  "cache_expected": false,
+  "corpus_size": 50,
+  "offered_rps": 800,
+  "requests": 5096,
+  "rps": 110.05524670607385,
+  "latency_ms": {
+    "avg": 1333.8367774950946,
+    "p50": 1240.4128965,
+    "p95": 2525.3238767499997,
+    "p99": 3186.5491539999994,
+    "max": 4836.515363
+  },
+  "error_rate": 0,
+  "cache": {
+    "hits": 0,
+    "misses": 0,
+    "hit_ratio": null
+  },
+  "served_by": {
+    "api-1": 2547,
+    "api-2": 2549
+  }
+}
+
+running (0m46.3s), 000/150 VUs, 5096 complete and 0 interrupted iterations
+redirects ✓ [ 100% ] 000/150 VUs  45s  800.00 iters/s
+time="2026-09-03T22:50:21Z" level=error msg="thresholds on metrics 'http_req_duration{name:redirect}' have been crossed"

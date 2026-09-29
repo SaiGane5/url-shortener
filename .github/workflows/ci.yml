@@ -1,0 +1,372 @@
+# CI for the URL shortener.
+#
+# Four jobs that can run in parallel, plus a gate that summarises them:
+#
+#   backend    lint, format check, type check, unit tests, integration tests
+#   frontend   lint, format check, type check, component tests, production build
+#   docker     image builds, compose validation, and an end-to-end stack smoke test
+#   security   dependency audit and image vulnerability scan
+#
+# Integration tests need real PostgreSQL and Redis, provided as service
+# containers rather than mocks -- the point of that suite is to exercise actual
+# driver behaviour, transactions and Lua scripts, which a fake would not.
+#
+# Nothing here depends on a developer's machine: every version is pinned in a
+# lock file or an image tag.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A new push to the same branch makes the previous run irrelevant.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Matches `python_version` in backend/pyproject.toml, which is what mypy
+  # type-checks against.
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: Backend (lint, types, tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: urlshort
+          POSTGRES_PASSWORD: urlshort
+          POSTGRES_DB: urlshort
+        ports: ["5432:5432"]
+        # Without this the first connection can beat the server to readiness.
+        options: >-
+          --health-cmd "pg_isready -U urlshort -d urlshort"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Integration tests create and drop their own database, so they need the
+      # server URL rather than the application's.
+      DATABASE_URL: postgresql+asyncpg://urlshort:urlshort@localhost:5432/urlshort
+      REDIS_URL: redis://localhost:6379/0
+      PUBLIC_BASE_URL: http://localhost:8000
+      APP_ENV: test
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: backend/requirements*.lock.txt
+
+      - name: Install dependencies
+        # The lock files are fully pinned and hash-checked, so CI installs
+        # exactly what was resolved locally.
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock.txt -r requirements-dev.lock.txt
+
+      - name: Lint (Ruff)
+        run: ruff check app tests
+
+      - name: Format check (Ruff)
+        run: ruff format --check app tests
+
+      - name: Type check (mypy)
+        run: mypy app tests
+
+      - name: Unit tests
+        run: pytest tests/unit -q
+
+      - name: Integration tests
+        run: pytest tests/integration -q
+
+      - name: Verify the migration matches the ORM metadata
+        # Cheap insurance against a model change landing without a migration:
+        # autogenerate must produce an empty diff.
+        run: |
+          alembic upgrade head
+          python - <<'PY'
+          import asyncio
+
+          from alembic.autogenerate import compare_metadata
+          from alembic.migration import MigrationContext
+          from sqlalchemy.ext.asyncio import create_async_engine
+
+          from app.core.config import get_settings
+          from app.db.base import Base
+          import app.db.models  # noqa: F401 - registers the tables on the metadata
+
+
+          async def main() -> None:
+              engine = create_async_engine(get_settings().database_url)
+              try:
+                  async with engine.connect() as connection:
+                      diff = await connection.run_sync(
+                          lambda sync_connection: compare_metadata(
+                              MigrationContext.configure(sync_connection), Base.metadata
+                          )
+                      )
+              finally:
+                  await engine.dispose()
+
+              meaningful = [
+                  entry
+                  for entry in diff
+                  if getattr(entry[1], "name", None) != "alembic_version"
+                  if isinstance(entry, tuple) and len(entry) > 1
+              ]
+              if meaningful:
+                  raise SystemExit(f"schema drift between models and migrations:\n{meaningful}")
+              print("migration matches the ORM metadata")
+
+
+          asyncio.run(main())
+          PY
+
+  frontend:
+    name: Frontend (lint, types, tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        # `npm ci` rather than `npm install`: it installs strictly from the
+        # lockfile and fails if package.json and the lockfile disagree.
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Format check (Prettier)
+        run: npm run format:check
+
+      - name: Type check (tsc)
+        run: npm run typecheck
+
+      - name: Component tests (Vitest + React Testing Library)
+        run: npm run test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Check the build actually produced assets
+        # A build can exit zero and emit nothing if the config regresses.
+        run: |
+          test -f dist/index.html || { echo "dist/index.html is missing"; exit 1; }
+          echo "build output:"
+          du -sh dist
+
+  docker:
+    name: Docker (build, compose, stack smoke test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Validate the Compose files
+        run: |
+          cp .env.example .env
+          docker compose config >/dev/null
+          docker compose -f docker-compose.yml -f docker-compose.loadtest.yml config >/dev/null
+          docker compose -f docker-compose.yml -f docker-compose.benchmark.yml config >/dev/null
+          echo "all Compose configurations are valid"
+
+      - name: Build the backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: url-shortener-backend:ci
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,scope=backend,mode=max
+
+      - name: Build the frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: false
+          load: true
+          tags: url-shortener-frontend:ci
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+      - name: Confirm the images run as a non-root user
+        run: |
+          for image in url-shortener-backend:ci url-shortener-frontend:ci; do
+            user="$(docker run --rm --entrypoint id "$image" -u 2>/dev/null || echo unknown)"
+            echo "$image runs as uid $user"
+            if [ "$user" = "0" ]; then
+              echo "::error::$image runs as root"
+              exit 1
+            fi
+          done
+
+      - name: Start the full stack
+        run: |
+          cp .env.example .env
+          docker compose up -d --wait --wait-timeout 240
+
+      - name: Smoke test the stack through Nginx
+        # Exercises the whole path a user takes -- load balancer, both API
+        # replicas, PostgreSQL and Redis -- rather than just asserting the
+        # containers are up.
+        run: |
+          set -euo pipefail
+
+          echo "--- liveness and readiness ---"
+          curl -fsS http://localhost:8080/health >/dev/null
+          curl -fsS http://localhost:8080/ready >/dev/null
+
+          echo "--- create ---"
+          created="$(curl -fsS -X POST http://localhost:8080/api/v1/urls \
+            -H 'Content-Type: application/json' \
+            -d '{"url":"https://example.com/ci-smoke-test"}')"
+          echo "$created"
+          code="$(printf '%s' "$created" | python3 -c 'import json,sys; print(json.load(sys.stdin)["short_code"])')"
+
+          echo "--- redirect ---"
+          location="$(curl -fsS -o /dev/null -w '%{redirect_url}' "http://localhost:8080/$code")"
+          test "$location" = "https://example.com/ci-smoke-test" \
+            || { echo "unexpected Location: $location"; exit 1; }
+
+          echo "--- metadata ---"
+          curl -fsS "http://localhost:8080/api/v1/urls/$code" >/dev/null
+
+          echo "--- metrics ---"
+          curl -fsS http://localhost:8080/metrics | grep -q http_requests_total
+
+          echo "--- both replicas serve traffic ---"
+          seen="$(for _ in $(seq 1 20); do
+            curl -fsS -o /dev/null -D- http://localhost:8080/health 2>/dev/null \
+              | tr -d '\r' | awk 'tolower($1)=="x-served-by:"{print $2}'
+          done | sort -u | tr '\n' ' ')"
+          echo "served by: $seen"
+          test "$(printf '%s' "$seen" | wc -w)" -ge 2 \
+            || { echo "::error::only one replica served traffic"; exit 1; }
+
+          echo "--- delete, then confirm it is gone ---"
+          curl -fsS -X DELETE "http://localhost:8080/api/v1/urls/$code" -o /dev/null
+          status="$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8080/$code")"
+          test "$status" = "404" || { echo "expected 404 after delete, got $status"; exit 1; }
+
+          echo "stack smoke test passed"
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose logs --tail 200
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
+
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Informational rather than blocking: a newly published advisory against a
+    # transitive dependency should not stop an unrelated change from merging.
+    # The findings still surface in the job summary and the Security tab.
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Audit Python dependencies
+        run: |
+          python -m pip install --upgrade pip pip-audit
+          pip-audit --requirement backend/requirements.lock.txt --strict \
+            || echo "::warning::pip-audit reported findings"
+
+      - name: Audit npm dependencies
+        working-directory: frontend
+        run: |
+          npm ci
+          npm audit --audit-level=high || echo "::warning::npm audit reported findings"
+
+      - name: Scan the filesystem for vulnerabilities and secrets
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          format: table
+          exit-code: "0"
+
+  gate:
+    name: CI gate
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, docker]
+    if: always()
+    steps:
+      - name: Fail if any required job failed
+        # `needs` alone does not fail the gate when a dependency is skipped or
+        # cancelled, so the results are checked explicitly. `security` is
+        # deliberately absent: it is advisory.
+        run: |
+          echo "backend:  ${{ needs.backend.result }}"
+          echo "frontend: ${{ needs.frontend.result }}"
+          echo "docker:   ${{ needs.docker.result }}"
+          for result in "${{ needs.backend.result }}" \
+                        "${{ needs.frontend.result }}" \
+                        "${{ needs.docker.result }}"; do
+            if [ "$result" != "success" ]; then
+              echo "::error::a required job did not succeed"
+              exit 1
+            fi
+          done
+          echo "all required jobs succeeded"

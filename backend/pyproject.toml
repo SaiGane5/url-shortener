@@ -1,0 +1,88 @@
+[project]
+name = "url-shortener-api"
+version = "1.0.0"
+description = "Distributed URL shortener with a Redis-backed distributed rate limiter"
+requires-python = ">=3.11"
+
+# Dependencies are managed via requirements.in / requirements.lock.txt (see
+# docs/ENGINEERING_DECISIONS.md for why pip-with-lockfile over Poetry/uv).
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["."]
+exclude = [".venv", "alembic/versions"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "ASYNC",# flake8-async
+    "BLE",  # flake8-blind-except -- every `except Exception` must be justified
+    "S",    # flake8-bandit
+    "A",    # flake8-builtins
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "ARG",  # unused arguments
+    "PTH",  # use pathlib
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "S104",   # binding to 0.0.0.0 is intentional inside containers
+    "B008",   # FastAPI's Depends() in defaults is the documented idiom
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",   # asserts are the point of a test suite
+    "S105",   # hardcoded test credentials
+    "S106",
+    "S311",   # non-crypto RNG is fine for generating test data
+    "ARG001", # pytest fixtures are injected but not always referenced
+    "ARG002",
+]
+"alembic/**" = ["ARG001", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_reexport = true
+plugins = ["pydantic.mypy"]
+exclude = ["^\\.venv/", "^alembic/versions/"]
+
+[[tool.mypy.overrides]]
+# Alembic's generated env module is dynamically typed by design.
+module = ["alembic.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "-q --strict-markers --strict-config"
+markers = [
+    "integration: requires live PostgreSQL and Redis (see docs/TESTING.md)",
+    "concurrency: exercises concurrent/racy code paths",
+    "failure: exercises dependency-failure behaviour",
+]
+filterwarnings = ["error::DeprecationWarning:app.*"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/__main__.py"]

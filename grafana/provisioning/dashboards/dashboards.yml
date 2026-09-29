@@ -1,0 +1,15 @@
+apiVersion: 1
+
+providers:
+  - name: url-shortener
+    orgId: 1
+    folder: URL Shortener
+    type: file
+    disableDeletion: false
+    # The dashboard is version controlled, so the file is the source of truth
+    # and UI edits should not be able to overwrite it.
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards
+      foldersFromFilesStructure: false

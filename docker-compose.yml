@@ -1,0 +1,226 @@
+# Full local stack:
+#
+#   docker compose up --build
+#
+#   Frontend    http://localhost:8080
+#   API         http://localhost:8080/api/v1/urls
+#   API docs    http://localhost:8080/docs
+#   Grafana     http://localhost:3000   (admin / admin by default)
+#   Prometheus  http://localhost:9090
+#   api-1       http://localhost:8001   (direct, bypassing the load balancer)
+#   api-2       http://localhost:8002   (direct, bypassing the load balancer)
+#
+# api-1 and api-2 are published individually on purpose: the distributed tests
+# in docs/TESTING.md need to address a specific replica to prove that rate-limit
+# and cache state really are shared rather than per process.
+
+name: url-shortener
+
+x-api-base: &api-base
+  build:
+    context: ./backend
+    dockerfile: Dockerfile
+  restart: unless-stopped
+  env_file: [.env]
+  environment:
+    DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-urlshort}:${POSTGRES_PASSWORD:-urlshort}@postgres:5432/${POSTGRES_DB:-urlshort}
+    REDIS_URL: redis://redis:6379/0
+    PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+  depends_on:
+    postgres: {condition: service_healthy}
+    redis: {condition: service_healthy}
+    migrate: {condition: service_completed_successfully}
+  # No ambient capabilities and no way to gain privileges: the app only needs
+  # to open a socket and talk to two databases.
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  read_only: true
+  tmpfs: ["/tmp:size=16m"]
+  networks: [backplane]
+
+services:
+  # --------------------------------------------------------------- data ---
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-urlshort}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-urlshort}
+      POSTGRES_DB: ${POSTGRES_DB:-urlshort}
+      # Deterministic collation so index behaviour does not depend on the host.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    command:
+      - postgres
+      # 2 API replicas x (pool 10 + overflow 10) + migrations + psql headroom.
+      - "-c"
+      - "max_connections=100"
+      # Per-statement execution stats, used in docs/PERFORMANCE.md to attribute
+      # time to specific queries instead of guessing.
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.track=all"
+      # Anything slower than 500ms lands in the log for investigation.
+      - "-c"
+      - "log_min_duration_statement=500"
+    ports: ["5433:5432"]   # 5433 on the host to avoid clashing with a local PostgreSQL
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-urlshort} -d ${POSTGRES_DB:-urlshort}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks: [backplane]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      # Cache + rate-limit buckets + click buffer. `allkeys-lru` means a full
+      # Redis evicts cold cache entries instead of refusing writes, which keeps
+      # the rate limiter (the part we cannot degrade silently) working.
+      - "--maxmemory"
+      - "256mb"
+      - "--maxmemory-policy"
+      - "allkeys-lru"
+      # AOF off deliberately: everything in Redis here is reconstructible from
+      # PostgreSQL or is a short-lived counter, and fsync on the hot path would
+      # cost more than the data is worth. Documented in docs/ARCHITECTURE.md.
+      - "--appendonly"
+      - "no"
+      - "--save"
+      - ""
+    ports: ["6380:6379"]   # 6380 on the host to avoid clashing with a local Redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [backplane]
+
+  # ---------------------------------------------------------- migrations ---
+  # One-shot. Runs to completion before any API replica starts, so two replicas
+  # can never race to apply the same migration.
+  migrate:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-urlshort}:${POSTGRES_PASSWORD:-urlshort}@postgres:5432/${POSTGRES_DB:-urlshort}
+      REDIS_URL: redis://redis:6379/0
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    networks: [backplane]
+
+  # ------------------------------------------------------- api replicas ---
+  api-1:
+    <<: *api-base
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-urlshort}:${POSTGRES_PASSWORD:-urlshort}@postgres:5432/${POSTGRES_DB:-urlshort}
+      REDIS_URL: redis://redis:6379/0
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      INSTANCE_ID: api-1
+    ports: ["8001:8000"]
+
+  api-2:
+    <<: *api-base
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-urlshort}:${POSTGRES_PASSWORD:-urlshort}@postgres:5432/${POSTGRES_DB:-urlshort}
+      REDIS_URL: redis://redis:6379/0
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      INSTANCE_ID: api-2
+    ports: ["8002:8000"]
+
+  # ---------------------------------------------------------- frontend ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Baked at build time (Vite inlines env vars). Empty string = "same
+        # origin", so the browser calls the load balancer it was served from
+        # and no production URL is ever hard-coded into the image.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL-}
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks: [backplane]
+
+  # ----------------------------------------------------- load balancer ---
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports: ["8080:80"]
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api-1: {condition: service_started}
+      api-2: {condition: service_started}
+      frontend: {condition: service_started}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/nginx-health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks: [backplane]
+
+  # ------------------------------------------------------ observability ---
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.enable-lifecycle"
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+    networks: [backplane]
+
+  grafana:
+    image: grafana/grafana:11.5.1
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      # Dashboards are provisioned from files, so the container needs no
+      # writable dashboard state and the dashboard is version controlled.
+      GF_DASHBOARDS_MIN_REFRESH_INTERVAL: "5s"
+    ports: ["3000:3000"]
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      prometheus: {condition: service_started}
+    networks: [backplane]
+
+networks:
+  backplane:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,30 @@
+# Benchmark profile: lets scripts/benchmark.sh flip the optimizations under test
+# from the shell, one arm at a time.
+#
+#   CACHE_ENABLED=false CLICK_FLUSH_ENABLED=false \
+#     docker compose -f docker-compose.yml -f docker-compose.benchmark.yml up -d
+#
+# Values in `environment` override those from `env_file`, so these win over
+# .env. Each has a default matching the production configuration, so bringing
+# the stack up with this file and no exported variables is equivalent to the
+# normal stack.
+#
+# Only the cache and click-write path are parameterised here. The other half of
+# the baseline -- dropping the UNIQUE index on short_code -- is done in SQL by
+# the script, because it is a schema change rather than configuration.
+
+x-benchmark-env: &benchmark-env
+  environment:
+    CACHE_ENABLED: "${CACHE_ENABLED:-true}"
+    CLICK_FLUSH_ENABLED: "${CLICK_FLUSH_ENABLED:-true}"
+    # The limiter stays enabled in both arms -- its Redis round-trip belongs in
+    # the measured path -- but with a budget large enough never to engage.
+    RATE_LIMIT_REQUESTS: "${RATE_LIMIT_REQUESTS:-2000000}"
+    RATE_LIMIT_WRITE_REQUESTS: "${RATE_LIMIT_WRITE_REQUESTS:-2000000}"
+    RATE_LIMIT_REDIRECT_REQUESTS: "${RATE_LIMIT_REDIRECT_REQUESTS:-2000000}"
+
+services:
+  api-1:
+    <<: *benchmark-env
+  api-2:
+    <<: *benchmark-env

@@ -1,0 +1,21 @@
+{
+  "scenario": "A -- URL creation",
+  "base_url": "http://nginx:80",
+  "requests": 27001,
+  "rps": 377.56019854424477,
+  "latency_ms": {
+    "avg": 59.88441217714146,
+    "p50": 10.785708,
+    "p95": 140.075917,
+    "p99": 416.656875,
+    "max": 18858.442952
+  },
+  "error_rate": 0.29087811562534716,
+  "urls_created": 19147,
+  "rate_limited": 0,
+  "served_by": {
+    "api-1": 9584,
+    "api-2": 9588,
+    "unknown": 7829
+  }
+}

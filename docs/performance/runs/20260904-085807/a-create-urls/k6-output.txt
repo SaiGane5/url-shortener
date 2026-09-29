@@ -1,0 +1,219 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: /scripts/create-urls.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 30 max VUs, 1m20s max duration (incl. graceful stop):
+              * creation: Up to 30 looping VUs for 1m10s over 3 stages (gracefulRampDown: 10s, gracefulStop: 30s)
+
+
+running (0m00.9s), 06/30 VUs, 411 complete and 0 interrupted iterations
+creation   [   1% ] 06/30 VUs  0m00.9s/1m10.0s
+
+running (0m01.9s), 08/30 VUs, 1214 complete and 0 interrupted iterations
+creation   [   3% ] 08/30 VUs  0m01.9s/1m10.0s
+
+running (0m02.9s), 09/30 VUs, 2259 complete and 0 interrupted iterations
+creation   [   4% ] 09/30 VUs  0m02.9s/1m10.0s
+
+running (0m03.9s), 11/30 VUs, 3190 complete and 0 interrupted iterations
+creation   [   6% ] 11/30 VUs  0m03.9s/1m10.0s
+
+running (0m04.9s), 13/30 VUs, 4072 complete and 0 interrupted iterations
+creation   [   7% ] 13/30 VUs  0m04.9s/1m10.0s
+
+running (0m05.9s), 14/30 VUs, 5303 complete and 0 interrupted iterations
+creation   [   8% ] 14/30 VUs  0m05.9s/1m10.0s
+
+running (0m06.9s), 16/30 VUs, 6345 complete and 0 interrupted iterations
+creation   [  10% ] 16/30 VUs  0m06.9s/1m10.0s
+
+running (0m07.9s), 18/30 VUs, 6882 complete and 0 interrupted iterations
+creation   [  11% ] 18/30 VUs  0m07.9s/1m10.0s
+
+running (0m08.9s), 19/30 VUs, 7690 complete and 0 interrupted iterations
+creation   [  13% ] 19/30 VUs  0m08.9s/1m10.0s
+
+running (0m09.9s), 21/30 VUs, 8557 complete and 0 interrupted iterations
+creation   [  14% ] 21/30 VUs  0m09.9s/1m10.0s
+
+running (0m10.9s), 23/30 VUs, 9301 complete and 0 interrupted iterations
+creation   [  16% ] 23/30 VUs  0m10.9s/1m10.0s
+
+running (0m11.9s), 24/30 VUs, 10021 complete and 0 interrupted iterations
+creation   [  17% ] 24/30 VUs  0m11.9s/1m10.0s
+
+running (0m12.9s), 26/30 VUs, 10629 complete and 0 interrupted iterations
+creation   [  18% ] 26/30 VUs  0m12.9s/1m10.0s
+
+running (0m13.9s), 28/30 VUs, 11058 complete and 0 interrupted iterations
+creation   [  20% ] 28/30 VUs  0m13.9s/1m10.0s
+
+running (0m14.9s), 29/30 VUs, 11674 complete and 0 interrupted iterations
+creation   [  21% ] 29/30 VUs  0m14.9s/1m10.0s
+
+running (0m15.9s), 30/30 VUs, 12457 complete and 0 interrupted iterations
+creation   [  23% ] 30/30 VUs  0m15.9s/1m10.0s
+
+running (0m16.9s), 30/30 VUs, 13233 complete and 0 interrupted iterations
+creation   [  24% ] 30/30 VUs  0m16.9s/1m10.0s
+
+running (0m17.9s), 30/30 VUs, 13801 complete and 0 interrupted iterations
+creation   [  26% ] 30/30 VUs  0m17.9s/1m10.0s
+
+running (0m18.9s), 30/30 VUs, 14026 complete and 0 interrupted iterations
+creation   [  27% ] 30/30 VUs  0m18.9s/1m10.0s
+
+running (0m19.9s), 30/30 VUs, 14738 complete and 0 interrupted iterations
+creation   [  28% ] 30/30 VUs  0m19.9s/1m10.0s
+
+running (0m20.9s), 30/30 VUs, 15387 complete and 0 interrupted iterations
+creation   [  30% ] 30/30 VUs  0m20.9s/1m10.0s
+
+running (0m21.9s), 30/30 VUs, 15837 complete and 0 interrupted iterations
+creation   [  31% ] 30/30 VUs  0m21.9s/1m10.0s
+
+running (0m22.9s), 30/30 VUs, 16045 complete and 0 interrupted iterations
+creation   [  33% ] 30/30 VUs  0m22.9s/1m10.0s
+
+running (0m23.9s), 30/30 VUs, 16349 complete and 0 interrupted iterations
+creation   [  34% ] 30/30 VUs  0m23.9s/1m10.0s
+
+running (0m24.9s), 30/30 VUs, 16870 complete and 0 interrupted iterations
+creation   [  36% ] 30/30 VUs  0m24.9s/1m10.0s
+
+running (0m25.9s), 30/30 VUs, 17680 complete and 0 interrupted iterations
+creation   [  37% ] 30/30 VUs  0m25.9s/1m10.0s
+
+running (0m26.9s), 30/30 VUs, 18181 complete and 0 interrupted iterations
+creation   [  38% ] 30/30 VUs  0m26.9s/1m10.0s
+
+running (0m27.9s), 30/30 VUs, 18519 complete and 0 interrupted iterations
+creation   [  40% ] 30/30 VUs  0m27.9s/1m10.0s
+
+running (0m28.9s), 30/30 VUs, 18794 complete and 0 interrupted iterations
+creation   [  41% ] 30/30 VUs  0m28.9s/1m10.0s
+
+running (0m29.9s), 30/30 VUs, 19032 complete and 0 interrupted iterations
+creation   [  43% ] 30/30 VUs  0m29.9s/1m10.0s
+
+running (0m30.9s), 30/30 VUs, 19103 complete and 0 interrupted iterations
+creation   [  44% ] 30/30 VUs  0m30.9s/1m10.0s
+
+running (0m32.0s), 30/30 VUs, 19154 complete and 0 interrupted iterations
+creation   [  46% ] 30/30 VUs  0m32.0s/1m10.0s
+
+running (0m33.3s), 30/30 VUs, 19154 complete and 0 interrupted iterations
+creation   [  48% ] 30/30 VUs  0m33.3s/1m10.0s
+
+running (0m37.3s), 30/30 VUs, 19163 complete and 0 interrupted iterations
+creation   [  53% ] 30/30 VUs  0m37.3s/1m10.0s
+
+running (0m48.3s), 30/30 VUs, 19164 complete and 0 interrupted iterations
+creation   [  69% ] 30/30 VUs  0m48.5s/1m10.0s
+
+running (0m48.5s), 30/30 VUs, 19164 complete and 0 interrupted iterations
+creation   [  69% ] 30/30 VUs  0m48.6s/1m10.0s
+
+running (0m48.8s), 30/30 VUs, 19164 complete and 0 interrupted iterations
+creation   [  70% ] 30/30 VUs  0m48.9s/1m10.0s
+
+running (0m49.9s), 30/30 VUs, 19187 complete and 0 interrupted iterations
+creation   [  71% ] 30/30 VUs  0m50.0s/1m10.0s
+
+running (0m50.9s), 30/30 VUs, 19373 complete and 0 interrupted iterations
+creation   [  73% ] 30/30 VUs  0m51.0s/1m10.0s
+
+running (0m51.8s), 30/30 VUs, 19668 complete and 0 interrupted iterations
+creation   [  74% ] 30/30 VUs  0m51.9s/1m10.0s
+
+running (0m53.6s), 30/30 VUs, 19980 complete and 0 interrupted iterations
+creation   [  77% ] 30/30 VUs  0m54.0s/1m10.0s
+
+running (0m53.9s), 30/30 VUs, 19980 complete and 0 interrupted iterations
+creation   [  77% ] 30/30 VUs  0m54.0s/1m10.0s
+
+running (0m55.0s), 30/30 VUs, 19984 complete and 0 interrupted iterations
+creation   [  79% ] 30/30 VUs  0m55.1s/1m10.0s
+
+running (0m56.0s), 30/30 VUs, 20002 complete and 0 interrupted iterations
+creation   [  80% ] 30/30 VUs  0m56.1s/1m10.0s
+
+running (0m56.8s), 30/30 VUs, 20235 complete and 0 interrupted iterations
+creation   [  81% ] 30/30 VUs  0m56.9s/1m10.0s
+
+running (0m57.8s), 30/30 VUs, 20379 complete and 0 interrupted iterations
+creation   [  83% ] 30/30 VUs  0m57.9s/1m10.0s
+
+running (0m58.9s), 30/30 VUs, 21290 complete and 0 interrupted iterations
+creation   [  84% ] 30/30 VUs  0m59.0s/1m10.0s
+
+running (0m59.8s), 30/30 VUs, 23142 complete and 0 interrupted iterations
+creation   [  86% ] 30/30 VUs  0m59.9s/1m10.0s
+
+running (1m00.9s), 27/30 VUs, 25650 complete and 0 interrupted iterations
+creation   [  87% ] 27/30 VUs  1m01.0s/1m10.0s
+
+running (1m02.5s), 26/30 VUs, 26596 complete and 0 interrupted iterations
+creation   [  89% ] 26/30 VUs  1m02.6s/1m10.0s
+
+running (1m04.2s), 26/30 VUs, 26596 complete and 0 interrupted iterations
+creation   [  92% ] 26/30 VUs  1m04.3s/1m10.0s
+
+running (1m04.8s), 17/30 VUs, 26905 complete and 0 interrupted iterations
+creation   [  93% ] 17/30 VUs  1m04.9s/1m10.0s
+
+running (1m07.1s), 17/30 VUs, 26972 complete and 0 interrupted iterations
+creation   [  96% ] 17/30 VUs  1m07.2s/1m10.0s
+
+running (1m07.8s), 17/30 VUs, 26973 complete and 0 interrupted iterations
+creation   [  97% ] 17/30 VUs  1m07.9s/1m10.0s
+
+running (1m09.8s), 08/30 VUs, 26992 complete and 0 interrupted iterations
+creation   [ 100% ] 08/30 VUs  1m09.9s/1m10.0s
+
+running (1m09.8s), 05/30 VUs, 26995 complete and 0 interrupted iterations
+creation   [ 100% ] 05/30 VUs  1m09.9s/1m10.0s
+
+running (1m10.9s), 03/30 VUs, 26998 complete and 0 interrupted iterations
+creation ↓ [ 100% ] 03/30 VUs  1m10s
+
+running (1m11.5s), 00/30 VUs, 27001 complete and 0 interrupted iterations
+creation ✓ [ 100% ] 00/30 VUs  1m10s
+
+running (1m11.5s), 00/30 VUs, 27001 complete and 0 interrupted iterations
+creation ✓ [ 100% ] 00/30 VUs  1m10s
+
+=== Scenario A: URL creation ===
+{
+  "scenario": "A -- URL creation",
+  "base_url": "http://nginx:80",
+  "requests": 27001,
+  "rps": 377.56019854424477,
+  "latency_ms": {
+    "avg": 59.88441217714146,
+    "p50": 10.785708,
+    "p95": 140.075917,
+    "p99": 416.656875,
+    "max": 18858.442952
+  },
+  "error_rate": 0.29087811562534716,
+  "urls_created": 19147,
+  "rate_limited": 0,
+  "served_by": {
+    "api-1": 9584,
+    "api-2": 9588,
+    "unknown": 7829
+  }
+}
+
+running (1m11.5s), 00/30 VUs, 27001 complete and 0 interrupted iterations
+creation ✓ [ 100% ] 00/30 VUs  1m10s
+time="2026-09-04T03:29:59Z" level=error msg="thresholds on metrics 'http_req_failed, url_create_success' have been crossed"

@@ -1,0 +1,26 @@
+{
+  "scenario": "B -- redirects",
+  "base_url": "http://nginx:80",
+  "cache_expected": true,
+  "corpus_size": 50,
+  "offered_rps": 100,
+  "requests": 4501,
+  "rps": 99.46659676201685,
+  "latency_ms": {
+    "avg": 4.334319665852039,
+    "p50": 2.2795,
+    "p95": 4.736958,
+    "p99": 51.620292,
+    "max": 379.715708
+  },
+  "error_rate": 0,
+  "cache": {
+    "hits": 4501,
+    "misses": 0,
+    "hit_ratio": 1
+  },
+  "served_by": {
+    "api-1": 2251,
+    "api-2": 2250
+  }
+}

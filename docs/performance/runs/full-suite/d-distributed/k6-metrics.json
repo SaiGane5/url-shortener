@@ -1,0 +1,265 @@
+{
+    "setup_data": {
+        "codes": [
+            "NsoVFZA",
+            "rZZDuQS",
+            "n3TiRsi",
+            "kUdssbt",
+            "DdZbWPg",
+            "p56qS58",
+            "h1RwLpb",
+            "5p8zC3f",
+            "Ek3BMC0",
+            "CvRdvaI",
+            "Hg8f79N",
+            "UgkHX2x",
+            "5BdtAV9",
+            "j72iyIM",
+            "mAS0ljI",
+            "LK2uf6L",
+            "wK1w4AD",
+            "tDILycH",
+            "C5Vg8N0",
+            "2jFMbWi",
+            "joX0TSp",
+            "imel6qy",
+            "4R6yrE5",
+            "7tulXOV",
+            "9SO23UO"
+        ]
+    },
+    "root_group": {
+        "checks": {
+            "redirect returned 307": {
+                "name": "redirect returned 307",
+                "path": "::redirect returned 307",
+                "id": "d6e544a50b1cc4d8d5f7b890552cf8b8",
+                "passes": 44452,
+                "fails": 0
+            },
+            "redirect reports cache state": {
+                "name": "redirect reports cache state",
+                "path": "::redirect reports cache state",
+                "id": "7300cba0cab16e284171d5d6936bbd40",
+                "passes": 44452,
+                "fails": 0
+            },
+            "create returned 201": {
+                "fails": 0,
+                "name": "create returned 201",
+                "path": "::create returned 201",
+                "id": "1d7a6263da05ef41ced8ecba1b370fc2",
+                "passes": 8890
+            },
+            "code created on one instance resolves anywhere": {
+                "name": "code created on one instance resolves anywhere",
+                "path": "::code created on one instance resolves anywhere",
+                "id": "4aac78b14952e0133956fb945a6e8845",
+                "passes": 8890,
+                "fails": 0
+            },
+            "metadata returned 200": {
+                "name": "metadata returned 200",
+                "path": "::metadata returned 200",
+                "id": "6905db6dc5bb3830c810287f535863b8",
+                "passes": 5926,
+                "fails": 0
+            },
+            "metadata reports a click count": {
+                "passes": 5926,
+                "fails": 0,
+                "name": "metadata reports a click count",
+                "path": "::metadata reports a click count",
+                "id": "a696ba9ebb838a733e5f82f4152f361d"
+            }
+        },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {}
+    },
+    "metrics": {
+        "data_sent": {
+            "count": 6651032,
+            "rate": 147214.85620736773
+        },
+        "http_reqs": {
+            "count": 68183,
+            "rate": 1509.171891036903
+        },
+        "http_req_duration": {
+            "max": 672.599542,
+            "avg": 26.29454827528843,
+            "min": 0.683458,
+            "med": 20.489458,
+            "p(90)": 55.24800000000002,
+            "p(95)": 74.09234189999992,
+            "p(99)": 130.32400588000002
+        },
+        "data_received": {
+            "count": 63970011,
+            "rate": 1415921.0136034125
+        },
+        "served_requests{instance:unknown}": {
+            "rate": 0,
+            "count": 0,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "served_redirects{instance:api-1}": {
+            "count": 26676,
+            "rate": 590.450249553414,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "http_req_blocked": {
+            "p(95)": 0.004042,
+            "p(99)": 0.012958,
+            "max": 10.392625,
+            "avg": 0.003925382338706332,
+            "min": 0.0005,
+            "med": 0.001209,
+            "p(90)": 0.002291
+        },
+        "cross_instance_resolves": {
+            "count": 4569,
+            "rate": 101.1308738270186
+        },
+        "vus": {
+            "value": 40,
+            "min": 40,
+            "max": 40
+        },
+        "http_req_waiting": {
+            "p(95)": 74.03372529999997,
+            "p(99)": 130.25877493999997,
+            "max": 672.372709,
+            "avg": 26.241888592508783,
+            "min": 0.66475,
+            "med": 20.444958,
+            "p(90)": 55.19585000000001
+        },
+        "http_req_sending": {
+            "med": 0.0035,
+            "p(90)": 0.008625,
+            "p(95)": 0.014083,
+            "p(99)": 0.0505,
+            "max": 13.98775,
+            "avg": 0.007092094554360759,
+            "min": 0.001417
+        },
+        "served_requests": {
+            "count": 68158,
+            "rate": 1508.618537601649
+        },
+        "http_req_receiving": {
+            "max": 107.245791,
+            "avg": 0.04556758822580418,
+            "min": 0.007875,
+            "med": 0.022084,
+            "p(90)": 0.073875,
+            "p(95)": 0.106,
+            "p(99)": 0.2870105599999998
+        },
+        "served_redirects": {
+            "count": 53342,
+            "rate": 1180.6791577327263
+        },
+        "served_requests{instance:api-1}": {
+            "count": 34079,
+            "rate": 754.3092688008245,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "served_redirects{instance:api-2}": {
+            "count": 26666,
+            "rate": 590.2289081793124,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "served_requests{instance:api-2}": {
+            "count": 34079,
+            "rate": 754.3092688008245,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "checks": {
+            "passes": 118536,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_tls_handshaking": {
+            "p(99)": 0,
+            "max": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iteration_duration": {
+            "min": 0.719584,
+            "med": 22.8063125,
+            "p(90)": 66.0320337,
+            "p(95)": 90.33510679999996,
+            "p(99)": 150.34310164,
+            "max": 842.077084,
+            "avg": 30.36895754764794
+        },
+        "request_success": {
+            "fails": 0,
+            "passes": 68158,
+            "thresholds": {
+                "rate>0.99": false
+            },
+            "value": 1
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 10.345083,
+            "avg": 0.001633996656057962
+        },
+        "iterations": {
+            "rate": 1311.8460560253313,
+            "count": 59268
+        },
+        "served_redirects{instance:unknown}": {
+            "count": 0,
+            "rate": 0,
+            "thresholds": {
+                "count>=0": false
+            }
+        },
+        "vus_max": {
+            "value": 40,
+            "min": 40,
+            "max": 40
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 68183,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 20.489458,
+            "p(90)": 55.24800000000002,
+            "p(95)": 74.09234189999992,
+            "p(99)": 130.32400588000002,
+            "max": 672.599542,
+            "avg": 26.29454827528843,
+            "min": 0.683458
+        }
+    }
+}

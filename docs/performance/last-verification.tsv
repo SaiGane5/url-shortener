@@ -1,0 +1,79 @@
+PASS	backend lint (ruff)	
+PASS	backend format (ruff)	
+PASS	backend type check (mypy)	
+PASS	backend unit tests	
+PASS	backend integration tests	
+PASS	frontend lint (eslint)	
+PASS	frontend format (prettier)	
+PASS	frontend type check (tsc)	
+PASS	frontend tests (vitest)	
+PASS	frontend production build	
+PASS	frontend build emitted assets	
+PASS	compose config valid	
+PASS	compose loadtest overlay valid	
+PASS	compose benchmark overlay valid	
+PASS	docker image build	
+PASS	stack startup (healthy)	
+PASS	liveness /health	
+PASS	readiness /ready	
+PASS	metrics /metrics	
+PASS	OpenAPI /docs	
+PASS	openapi.json	
+PASS	frontend served	
+PASS	SPA client route	
+PASS	create URL via API	
+PASS	redirect resolves to the original URL	
+PASS	redirect status is 307	
+PASS	metadata read	
+PASS	cache hit observed (X-Cache: hit)	
+PASS	cache miss observed after eviction	
+PASS	cache repopulated after the miss	
+PASS	rejects a malformed URL	
+PASS	rejects javascript: scheme	
+PASS	blocks SSRF to link-local	
+PASS	blocks permissive IPv4 loopback	
+PASS	unknown code returns 404	
+PASS	nginx self-redirects are relative (Location: /api/)	
+PASS	reserved path is not a short code	
+PASS	security/diagnostic header: x-content-type-options	
+PASS	security/diagnostic header: x-frame-options	
+PASS	security/diagnostic header: x-request-id	
+PASS	security/diagnostic header: x-served-by	
+PASS	delete returns 204	
+PASS	deleted code no longer redirects	
+PASS	deleted code has no metadata	
+PASS	load balanced across replicas	
+PASS	shared cache across replicas (created on api-1, cache hit on api-2)	
+PASS	rate limit is shared across replicas (both refused after draining)	
+PASS	429 carries x-ratelimit-limit	
+PASS	429 carries x-ratelimit-remaining	
+PASS	429 carries x-ratelimit-policy	
+PASS	429 carries retry-after	
+PASS	Prometheus is up	
+PASS	Prometheus scrapes both API replicas (2 up)	
+PASS	metric exposed: http_requests_total	
+PASS	metric exposed: http_request_duration_seconds_bucket	
+PASS	metric exposed: cache_hits_total	
+PASS	metric exposed: cache_misses_total	
+PASS	metric exposed: cache_errors_total	
+PASS	metric exposed: urls_created_total	
+PASS	metric exposed: url_redirects_total	
+PASS	metric exposed: rate_limit_decisions_total	
+PASS	metric exposed: redis_errors_total	
+PASS	metric exposed: postgres_errors_total	
+PASS	cache hit-ratio series seeded on localhost:8001	
+PASS	cache hit-ratio series seeded on localhost:8002	
+PASS	metric route labels are templates, not raw paths	
+PASS	Grafana is up	
+PASS	Grafana dashboard is provisioned	
+PASS	every dashboard query is valid PromQL	
+PASS	Redis down: redirects still work (fail open)	
+PASS	Redis down: writes fail closed with 503	
+PASS	Redis down: /ready reports degraded but stays in service (200)	
+PASS	PostgreSQL down: cached redirects still work	
+PASS	PostgreSQL down: uncached lookup degrades cleanly (503)	
+PASS	PostgreSQL down: /ready returns 503 (not ready)	
+PASS	one replica down: traffic continues via the survivor (10/10)	
+PASS	expired link returns 410 (not 404)	
+SKIP	k6 load scenarios	pass --with-load to run (~4 min)
+SKIP	baseline vs optimized benchmark	pass --with-load to run (~6 min)

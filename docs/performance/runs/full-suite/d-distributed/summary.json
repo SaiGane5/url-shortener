@@ -1,0 +1,31 @@
+{
+  "scenario": "D -- concurrent distributed traffic",
+  "base_url": "http://nginx:80",
+  "requests": 68183,
+  "rps": 1509.171891036903,
+  "latency_ms": {
+    "avg": 26.29454827528843,
+    "p50": 20.489458,
+    "p95": 74.09234189999992,
+    "p99": 130.32400588000002
+  },
+  "error_rate": 0,
+  "instances_that_served": [
+    "api-1",
+    "api-2"
+  ],
+  "served_by": {
+    "api-1": 34079,
+    "api-2": 34079
+  },
+  "share_of_traffic": {
+    "api-1": 0.5,
+    "api-2": 0.5
+  },
+  "redirects_served_by": {
+    "api-1": 26676,
+    "api-2": 26666
+  },
+  "load_balanced": true,
+  "cross_instance_resolves": 4569
+}

@@ -1,0 +1,18 @@
+# Datasource provisioning. Grafana reads this on startup, so the dashboard
+# works on a fresh `docker compose up` with no clicking in the UI.
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    # The dashboard JSON references this uid, so it must stay stable.
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      # Must match prometheus.yml's scrape_interval, otherwise Grafana picks a
+      # step that hides detail (or asks for more resolution than exists).
+      timeInterval: 5s
+      httpMethod: POST

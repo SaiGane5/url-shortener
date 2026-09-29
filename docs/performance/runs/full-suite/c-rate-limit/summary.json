@@ -1,0 +1,22 @@
+{
+  "scenario": "C -- distributed rate limiter",
+  "base_url": "http://nginx:80",
+  "policy": "write",
+  "requests_sent": 60,
+  "allowed": 20,
+  "throttled": 40,
+  "configured_limit": 20,
+  "allowed_within_one_shared_budget": true,
+  "bucket_identity_stable": true,
+  "first_throttled_at": 20,
+  "instances_that_served": [
+    "api-1",
+    "api-2"
+  ],
+  "served_by": {
+    "api-1": 30,
+    "api-2": 30
+  },
+  "checks_passed": 220,
+  "checks_failed": 0
+}

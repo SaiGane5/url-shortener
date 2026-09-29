@@ -1,0 +1,38 @@
+# Prometheus scrape configuration.
+#
+# Each API replica is scraped DIRECTLY (api-1:8000, api-2:8000) rather than
+# through the load balancer. Scraping through Nginx would round-robin the
+# request and produce one time series that randomly alternates between
+# replicas -- counters would appear to jump backwards and rate() would be
+# meaningless. Scraping each replica gives per-instance series that PromQL sums
+# when a total is wanted, and lets us compare replicas when it is not.
+
+global:
+  scrape_interval: 5s          # tight, because load tests are short
+  scrape_timeout: 4s
+  evaluation_interval: 15s
+  external_labels:
+    environment: local
+    stack: url-shortener
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+  - job_name: url-shortener-api
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - api-1:8000
+          - api-2:8000
+    relabel_configs:
+      # `instance` defaults to host:port; rewrite it to the replica name so
+      # dashboards and the "which replica served this?" question read cleanly.
+      - source_labels: [__address__]
+        regex: "(api-[0-9]+):.*"
+        target_label: replica
+        replacement: "$1"
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

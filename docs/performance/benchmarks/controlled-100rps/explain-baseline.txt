@@ -1,0 +1,19 @@
+-- baseline: the exact lookup the redirect path performs
+-- rows in table: 250000
+
+                                                     QUERY PLAN                                                     
+--------------------------------------------------------------------------------------------------------------------
+ Gather  (cost=1000.00..7033.18 rows=1 width=112) (actual time=12.850..14.761 rows=1 loops=1)
+   Workers Planned: 2
+   Workers Launched: 2
+   Buffers: shared hit=4731
+   ->  Parallel Seq Scan on urls  (cost=0.00..6033.08 rows=1 width=112) (actual time=10.067..10.068 rows=0 loops=3)
+         Filter: ((deleted_at IS NULL) AND ((short_code)::text = 'af7d1130fd45'::text))
+         Rows Removed by Filter: 83333
+         Buffers: shared hit=4731
+ Planning:
+   Buffers: shared hit=114
+ Planning Time: 1.061 ms
+ Execution Time: 14.888 ms
+(12 rows)
+
